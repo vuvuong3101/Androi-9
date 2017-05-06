@@ -1,9 +1,10 @@
 package gameframe.enemies;
 
-import gameframe.Collider;
+import gameframe.controller.Collider;
 import gameframe.PlayerController;
 import gameframe.controller.CollisionManager;
 import gameframe.controller.Controller;
+import gameframe.controller.ControllerManager;
 import gameframe.models.GameRect;
 import gameframe.utils.Utils;
 import gameframe.views.ImageRenderer;
@@ -23,14 +24,19 @@ public class EnemyController extends Controller implements Collider{
         this.enemyHP = enemyHP;
     }
 
-    private int enemyHP = 3;
+    private int enemyHP = 2;
     private int damage = 2;
-    static boolean isStatusLeft;
     static boolean isStatusRight;
     private boolean shootEnable;
     private Movebehavior movebehavior;
     static  ArrayList<BulletEnemyController> bulletEnemyControllers;
 
+
+    public ArrayList<EnemyController> getEnemyControllers() {
+        return enemyControllers;
+    }
+
+    ArrayList<EnemyController> enemyControllers;
     public void setMovebehavior(Movebehavior movebehavior) {
         this.movebehavior = movebehavior;
     }
@@ -46,17 +52,19 @@ public class EnemyController extends Controller implements Collider{
 
     }
 
+    @Override
+    public void update() {
+        automove();
+        if(gameRect.getY() > 0) {
+            autoshoot();
+        }
+    }
+
     public  void automove(){
         if (movebehavior != null) {
             movebehavior.move(gameRect);
 
         }
-//        if (gameRect.getY() > 700) {
-//            gameRect.setY(0);
-//        }
-//        if (gameRect.getX() > 600) {
-//            gameRect.setY(100);
-//        }
     }
     int coolDownTime;
     public  void autoshoot() {
@@ -70,6 +78,7 @@ public class EnemyController extends Controller implements Collider{
             shootEnable = false;
             coolDownTime = 70;
         }
+
         if (coolDownTime == 0){
             shootEnable = true;
         }

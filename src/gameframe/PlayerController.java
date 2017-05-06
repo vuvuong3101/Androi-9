@@ -1,10 +1,15 @@
 package gameframe;
 
+import gameframe.BulletPlayerController;
+import gameframe.controller.Collider;
 import gameframe.controller.CollisionManager;
 import gameframe.controller.Controller;
+import gameframe.controller.ControllerManager;
 import gameframe.enemies.EnemyController;
+import gameframe.enemies.Movebehavior;
 import gameframe.items.ItemController;
 import gameframe.models.GameRect;
+import gameframe.scenes.Level1scene;
 import gameframe.utils.Utils;
 import gameframe.views.ImageRenderer;
 import java.awt.*;
@@ -22,7 +27,21 @@ public class PlayerController extends Controller implements Collider {
     private int screenH = 700;
     private int playerHP = 10;
     private int damage = 20;
-    private  boolean isOneBullet =  true;
+
+    public void setIsBullet(int isBullet) {
+        this.isBullet = isBullet;
+    }
+
+    public int getIsBullet() {
+        return isBullet;
+    }
+
+    private  int isBullet = 1 ;
+    private  int cdTime = 0;
+    String bulletdefaut = null;
+    String onebullet = "res/bullet-single.png";
+    String towbullet = "res/bullet-double.png";
+    private  int active = 1;
 
 
     public int getPlayerHP() {
@@ -37,7 +56,8 @@ public class PlayerController extends Controller implements Collider {
     private ImageRenderer imageRenderer;
     static ArrayList<BulletPlayerController> bulletPlayerControllers;
     BulletPlayerController bulletPlayerController;
-
+    Movebehavior movebehavior;
+    private  Level1scene level1scene;
 
     public PlayerController(int x, int y, Image image) {
         gameRect =  new GameRect(x, y, 70, 56);
@@ -59,17 +79,28 @@ public class PlayerController extends Controller implements Collider {
         }
         if (other instanceof ItemController) {
             ((ItemController)other).getHit();
-            isOneBullet = false;
-            if (!isOneBullet) {
+            isBullet += 1;
+            System.out.println(isBullet);
+            if (isBullet == 2) {
                 for (BulletPlayerController bulletPlayerController : bulletPlayerControllers) {
                     bulletPlayerController.setDamage(10);
-                    bulletPlayerController.getDamage();
+//                    bulletPlayerController.getDamage();
+                    System.out.println(bulletPlayerController.getDamage());
+
                 }
             }
 
         }
 
     }
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
+
 
 
 
@@ -95,53 +126,65 @@ public class PlayerController extends Controller implements Collider {
                               boolean isDownPressed,
                               boolean isLeftPressed,
                               boolean isRightPressed,
-                              boolean isSpacePressed){
+                              boolean isSpacePressed) {
         dx = 0;
         dy = 0;
-        if (isUpPressed) {
-            if (gameRect.getY() > 20) {
-                dy -= 10;
-            }
-        }
-        if (isDownPressed) {
-            if (gameRect.getY() <= screenH - gameRect.getHeight()) {
-                dy += 10;
-            }
-        }
-        if (isLeftPressed) {
-            if (gameRect.getX() >= 0) {
-                dx -= 10;
-            }
-        }
-        if (isRightPressed) {
-            if (gameRect.getX() <= screenW - gameRect.getWidth()) {
-                dx += 10;
-            }
-        }
 
-        if (isSpacePressed) {
-            String bulletdefaut = null;
-            String onebullet = "res/bullet.png";
-            String towbullet = "res/bullet-double.png";
-            if (isOneBullet) {
-                bulletdefaut = onebullet;
+        if (active == 2) {
+            if (isUpPressed) {
+                if (gameRect.getY() > 20) {
+                    dy -= 10;
+                }
             }
-            if (!isOneBullet) {
-                bulletdefaut = towbullet;
+            if (isDownPressed) {
+                if (gameRect.getY() <= screenH - gameRect.getHeight()) {
+                    dy += 10;
+                }
             }
-            if (shootEnable) {
-                BulletPlayerController bullet = new BulletPlayerController(gameRect.getX() + gameRect.getWidth() / 2,
-                        gameRect.getY(),Utils.loadImage(bulletdefaut));
-                bulletPlayerControllers.add(bullet);
-                shootEnable = false;
-                coolDownTime = 15;
+            if (isLeftPressed) {
+                if (gameRect.getX() >= 0) {
+                    dx -= 10;
+                }
             }
-            if (playerHP <=0) {
-                shootEnable = false;
+            if (isRightPressed) {
+                if (gameRect.getX() <= screenW - gameRect.getWidth()) {
+                    dx += 10;
+                }
             }
 
-        }
+            if (isSpacePressed) {
 
+                if (isBullet == 1) {
+                    bulletdefaut = onebullet;
+                }
+                if (isBullet == 2) {
+                    bulletdefaut = towbullet;
+                }
+                if (shootEnable) {
+                    BulletPlayerController bullet = new BulletPlayerController(gameRect.getX() + gameRect.getWidth() / 2,
+                            gameRect.getY(), Utils.loadImage(bulletdefaut));
+                    bulletPlayerControllers.add(bullet);
+                    shootEnable = false;
+                    coolDownTime = 15;
+                    if (isBullet == 3) {
+                        BulletPlayerController bullet2 = new BulletPlayerController(gameRect.getX() + gameRect.getWidth() / 2,
+                                gameRect.getY(), Utils.loadImage(bulletdefaut));
+                    }
+                }
+                if (playerHP <= 0) {
+                    shootEnable = false;
+                }
+
+            }
+
+        }
+        if (active == 1) {
+            gameRect.move(0, -3);
+            if (gameRect.getY() < 570) {
+                gameRect.move(0, 0);
+                active = 2;
+            }
+        }
     }
     int coolDownTime;
     public  void update() {
@@ -149,8 +192,18 @@ public class PlayerController extends Controller implements Collider {
         if  (!shootEnable) {
             if (playerHP > 0)
             coolDownTime --;
-            if (coolDownTime == 0) {
+            if (coolDownTime <= 0) {
                 shootEnable = true;
+            }
+        }
+
+        if (isBullet == 2) {
+            cdTime ++;
+            System.out.println(cdTime);
+
+            if (cdTime >= 700) {
+                isBullet -= 1;
+                cdTime = 0;
             }
         }
     }

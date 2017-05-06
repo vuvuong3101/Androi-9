@@ -8,6 +8,6 @@ import gameframe.models.GameRect;
 public class HorzMovebehavior extends Movebehavior {
     @Override
     public void move(GameRect gameRect) {
-        gameRect.move(0, 1);
+        gameRect.move(0, 3);
     }
 }

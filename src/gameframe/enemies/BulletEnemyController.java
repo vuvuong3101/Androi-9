@@ -1,10 +1,11 @@
 package gameframe.enemies;
 
-import gameframe.Collider;
+import gameframe.controller.Collider;
 
 import gameframe.PlayerController;
 import gameframe.controller.CollisionManager;
 import gameframe.controller.Controller;
+import gameframe.controller.ControllerManager;
 import gameframe.models.GameRect;
 import gameframe.views.ImageRenderer;
 

@@ -1,8 +1,9 @@
 package gameframe.items;
 
-import gameframe.Collider;
+import gameframe.controller.Collider;
 import gameframe.controller.CollisionManager;
 import gameframe.controller.Controller;
+import gameframe.controller.ControllerManager;
 import gameframe.models.GameRect;
 import gameframe.views.ImageRenderer;
 
@@ -16,6 +17,7 @@ public class ItemController extends Controller implements Collider {
        gameRect = new GameRect(x, y, image.getWidth(null), image.getHeight(null));
        imageRenderer = new ImageRenderer(image);
         CollisionManager.instance.add(this);
+
 
     }
     public  void draw(Graphics graphics) {

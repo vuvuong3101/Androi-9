@@ -6,20 +6,8 @@ import gameframe.models.GameRect;
  */
 public class Movebehavior {
     public  void move(GameRect gameRect) {
-        if (EnemyController.isStatusLeft) {
-            gameRect.move(-5, 3);
-            if (gameRect.getX() == 0) {
-               EnemyController. isStatusLeft = false;
-                EnemyController.isStatusRight = true;
-            }
+       gameRect.move(5, 3);
         }
-        if (EnemyController.isStatusRight) {
-            gameRect.move(5, 3);
-            if (gameRect.getX() == 550) {
-                EnemyController.isStatusRight = false;
-                EnemyController.isStatusLeft = true;
-            }
-        }
-        }
+
 
 }

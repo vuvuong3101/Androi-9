@@ -1,6 +1,5 @@
 package gameframe.controller;
 
-import gameframe.Collider;
 import gameframe.models.GameRect;
 
 import java.util.ArrayList;

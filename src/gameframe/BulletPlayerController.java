@@ -1,15 +1,19 @@
 package gameframe;
 
+import gameframe.controller.Collider;
 import gameframe.controller.CollisionManager;
 import gameframe.controller.Controller;
+import gameframe.controller.ControllerManager;
 import gameframe.enemies.EnemyController;
 import gameframe.models.GameRect;
+import gameframe.scenes.Level1scene;
 import gameframe.views.ImageRenderer;
 
 import java.awt.*;
 
 public class BulletPlayerController extends Controller implements Collider {
-    private  int damage = 1;
+    private   int damage;
+    PlayerController playerController;
 
     public BulletPlayerController(int x, int y, Image image) {
         int rectx = x - image.getWidth(null) / 2;
@@ -18,8 +22,10 @@ public class BulletPlayerController extends Controller implements Collider {
         int rectHeight = image.getHeight(null);
         this.imageRenderer = new ImageRenderer(image);
         this.gameRect = new GameRect(rectx, recty, rectWidth, rectHeight);
+        damage = 2;
 
         CollisionManager.instance.add(this);
+        System.out.println(damage);
     }
 
     public int getDamage() {
@@ -30,8 +36,13 @@ public class BulletPlayerController extends Controller implements Collider {
         this.damage = damage;
     }
     public void update() {
-        gameRect.move(0, -12);
+//        if (playerController.getIsBullet() == 2) {
+            this.damage = 2;
+        
+
+        gameRect.move(0, -15);
     }
+
 
     @Override
     public void onCollide(Collider other) {

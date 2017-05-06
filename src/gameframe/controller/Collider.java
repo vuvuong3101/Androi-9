@@ -1,4 +1,4 @@
-package gameframe;
+package gameframe.controller;
 
 import gameframe.models.GameRect;
 
